@@ -9,9 +9,13 @@ import SwiftUI
 
 @main
 struct PersonalDashboardApp: App {
+	@State private var navController = NavController()
+	
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            RootView()
+				.modelContainer(for: [ToDoItem.self, PomodoroSessionData.self, MoodEntry.self, Note.self])
+				.environmentObject(navController)
         }
     }
 }
