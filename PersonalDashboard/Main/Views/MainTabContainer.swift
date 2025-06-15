@@ -24,8 +24,6 @@ struct MainTabContainer: View {
 					PomodoroView()
 				case .stats:
 					StatsView()
-				case .notes:
-					NotesView()
 				case .settings:
 					SettingsTabView()
 				}

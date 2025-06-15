@@ -61,11 +61,6 @@ struct NavigationBar: View {
 					}
 					.buttonStyle(DashboardButtonStyle(isSelected: currentSection == .stats, globalVM: globalVM))
 					
-					Button(action: {currentSection = .notes}) {
-						Image(systemName: "square.and.pencil.circle.fill")
-					}
-					.buttonStyle(DashboardButtonStyle(isSelected: currentSection == .notes, globalVM: globalVM))
-					
 					Button(action: {currentSection = .settings}) {
 						Image(systemName: "gearshape.fill")
 					}

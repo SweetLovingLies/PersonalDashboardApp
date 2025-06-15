@@ -67,8 +67,17 @@ extension LandingView {
 			"I am open and ready to learn."
 		]
 		let moods: [Mood] = Mood.allMoods
-		
 		var selectedMood: Mood = .happy
+		
+		func didLogMoodToday(entries: [MoodEntry]) -> Bool {
+			let calendar = Calendar.current
+			let today = Date()
+			
+			return entries.contains { entry in
+				calendar.isDate(entry.dateCreated, inSameDayAs: today)
+			}
+		}
+		
 		
 		func getAffirmationForToday() -> String {
 			let calendar = Calendar.current

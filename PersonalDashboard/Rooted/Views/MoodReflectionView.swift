@@ -77,6 +77,7 @@ struct MoodReflectionView: View {
 							.background(.ultraThinMaterial)
 							.clipShape(RoundedRectangle(cornerRadius: 10))
 							.tint(globalVM.currentTheme.color(for: .accent1))
+							.font(.custom("Fredoka-Medium", size: GlobalVM.bodyFontSize))
 						
 						Text("Would you like to speak to why you are feeling this way?")
 							.font(.custom("Fredoka-Medium", size: GlobalVM.bodyFontSize))
@@ -109,7 +110,7 @@ struct MoodReflectionView: View {
 				
 			}
 		}
-//		.navigationBarBackButtonHidden()
+		.navigationBarBackButtonHidden()
 	}
 }
 

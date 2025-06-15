@@ -13,6 +13,15 @@ struct Flower: Identifiable, Codable {
 	let ftype: FlowerType
 	var growthStage: GrowthStage = .seed
 	var hasBeenWatered: Bool = false
+	var isPlanted: Bool = false
 	var datePlanted: Date? = nil
+	
+	func getDatePlanted() -> String {
+		let dateFormatter = DateFormatter()
+		dateFormatter.dateFormat = "MMM dd, yyyy"
+		
+		return datePlanted.map { dateFormatter.string(from: $0) } ?? "Unknown"
+	}
+
 }
 
