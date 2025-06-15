@@ -1,5 +1,5 @@
 //
-//  TodoView.swift
+//  TodoAddItemView.swift
 //  PersonalDashboard
 //
 //  Created by Morgan Harris on 5/18/25.
@@ -9,13 +9,19 @@ import SwiftUI
 import SwiftData
 import UserNotifications
 
-struct AddItemView: View {
+struct TodoAddItemView: View {
 	@Environment(\.modelContext) private var modelContext
 	@Environment(GlobalVM.self) private var globalVM
-	@Query(sort: \ToDoItem.sortOrder) var taskItems: [ToDoItem]
 	@State private var vm = TodoViewModel()
 	
 	@FocusState private var isFocused: Bool
+	
+	@Query(sort: \ToDoItem.sortOrder) var todoItems: [ToDoItem]
+	init() {
+		_todoItems = Query(filter: #Predicate {
+			$0.isCompleted == false
+		})
+	}
 	
 	var body: some View {
 		ZStack {
@@ -144,16 +150,17 @@ struct AddItemView: View {
 				
 				// MARK: List
 				List {
-					ForEach(taskItems, id: \.self) { taskItem in
-						ToDoItemView(taskItem: taskItem)
+					ForEach(todoItems, id: \.self) { item in
+						ToDoItemView(todoItem: item)
 							.listRowSeparator(.hidden)
 							.listRowBackground(Color.clear)
 							.onTapGesture {
-								taskItem.isCompleted.toggle()
+								item.isCompleted.toggle()
+								item.completedAt = .now
 							}
 					}
 					.onMove { from, to in
-						var updatedItems = taskItems
+						var updatedItems = todoItems
 						updatedItems.move(fromOffsets: from, toOffset: to)
 
 						for i in updatedItems.indices {
@@ -165,7 +172,7 @@ struct AddItemView: View {
 
 					.onDelete { indexSet in
 						for index in indexSet {
-							modelContext.delete(taskItems[index])
+							modelContext.delete(todoItems[index])
 						}
 					}
 				}
@@ -188,7 +195,7 @@ struct AddItemView: View {
 	context.insert(ToDoItem(title: "Sample Task 4"))
 	context.insert(ToDoItem(title: "Sample Task 5"))
 	
-	return AddItemView()
+	return TodoAddItemView()
 		.modelContainer(container)
 		.environment(GlobalVM())
 }

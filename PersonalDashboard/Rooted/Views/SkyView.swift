@@ -23,7 +23,7 @@ struct SkyView: View {
 			}
 		}
 		.frame(width: viewWidth, height: viewHeight)
-		.clipped() // Hides overflow
+//		.clipped() // Hides overflow
 		.onAppear {
 			startCloudAnimation()
 		}
@@ -88,7 +88,7 @@ struct CloudView: View {
 	}
 	
 	var body: some View {
-		Image(systemName: "cloud.fill")
+		Image(.customCloud)
 			.font(.system(size: cloudSize))
 			.foregroundStyle(.white)
 			.offset(x: xOffset, y: clampedYOffset)

@@ -8,5 +8,5 @@
 import Foundation
 
 enum NavSection {
-	case landing, todo, pomodoro, stats, notes, settings
+	case landing, todo, pomodoro, stats, settings
 }

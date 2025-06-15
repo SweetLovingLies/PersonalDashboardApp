@@ -6,17 +6,18 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct LandingView: View {
 	@State private var vm = ViewModel()
 	@Environment(GlobalVM.self) private var globalVM
 	@State private var currentAffirmation: String = ""
 	@State private var float = false
-	
 	@EnvironmentObject var navController: NavController
 	
-	@State var selectedMood: Mood? = nil
-	
+	@Query private var allMoodEntries: [MoodEntry]
+
+		
 	var body: some View {
 		
 		ZStack {
@@ -121,21 +122,37 @@ struct LandingView: View {
 								}
 							}
 							
-							// Grass and Button
+							// Grass and Buttons
 							ZStack {
 								Rectangle()
 									.foregroundStyle(.leafyGreen)
 									.frame(height: 75)
 								
-								Button(action:{navController.navigate(to: .reflection(selectedMood: vm.selectedMood))}) {
-									Text("Select!")
+								HStack {
+									if !vm.didLogMoodToday(entries: allMoodEntries) {
+										Button(action: {
+											navController.navigate(to: .reflection(selectedMood: vm.selectedMood))
+										}) {
+											Text("Select!")
+										}
+										.mainButtonStyle(
+											gradientColor1: globalVM.currentTheme.color(for: .accent2),
+											fontColor: globalVM.currentTheme.color(for: .textPrimary),
+											strokeColor: globalVM.currentTheme.color(for: .accent1),
+											font: globalVM.currentTheme.bodyFont
+										)
+									}
+									
+									Button(action:{navController.navigate(to: .garden)}) {
+										Text("Visit Garden")
+									}
+									.mainButtonStyle(
+										gradientColor1: globalVM.currentTheme.color(for: .accent2),
+										fontColor: globalVM.currentTheme.color(for: .textPrimary),
+										strokeColor: globalVM.currentTheme.color(for: .accent1),
+										font: globalVM.currentTheme.bodyFont
+									)
 								}
-								.mainButtonStyle(
-									gradientColor1: globalVM.currentTheme.color(for: .accent2),
-									fontColor: globalVM.currentTheme.color(for: .textPrimary),
-									strokeColor: globalVM.currentTheme.color(for: .accent1),
-									font: globalVM.currentTheme.bodyFont
-								)
 								
 							}
 						}

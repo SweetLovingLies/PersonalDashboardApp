@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 enum FlowerType: String, CaseIterable, Codable {
 	// Cheerful & Bright
@@ -72,5 +73,22 @@ enum FlowerType: String, CaseIterable, Codable {
 	case strawflower = "Strawflower"
 	case fireLily = "Fire Lily"
 	case redCap = "Red-Capped Mushroom"
+}
+
+extension FlowerType {
+	var displayColor: Color {
+		switch self {
+		case .lilyOfTheValley, .gardenia, .snowdrop, .jasmine, .edelweiss, .ghostOrchid, .moonflower, .chamomile:
+			return .white
+			
+		default:
+			let assetName = self.rawValue
+				.lowercased()
+				.replacingOccurrences(of: " ", with: "")
+				.replacingOccurrences(of: "-", with: "")
+			let result = Color(assetName)
+			return result
+		}
+	}
 }
 

@@ -30,8 +30,8 @@ struct MainView: View {
 					case .garden:
 						GardenView()
 							.environmentObject(navController)
-					case .wateringTransition:
-						Text("Not done yet!")
+					case .wateringTransition(let seed):
+						WateringTransition(seed: seed)
 							.environmentObject(navController)
 					}
 				}

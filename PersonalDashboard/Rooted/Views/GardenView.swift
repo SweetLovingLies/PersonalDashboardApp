@@ -9,18 +9,20 @@ import SwiftUI
 import SwiftData
 
 struct GardenView: View {
-	@Query private var moodEntry: [MoodEntry]
+	@Environment(GlobalVM.self) private var globalVM
+	@EnvironmentObject var navController: NavController
+	@Query private var allMoodEntries: [MoodEntry]
+	var flowers: [Flower] {
+		allMoodEntries
+			.compactMap { $0.flower }
+			.filter { $0.datePlanted != nil }
+	}
 	
-	var flowers: [Flower] = [
-		Flower(ftype: .fireLily),
-		Flower(ftype: .sunflower),
-		Flower(ftype: .cherryBlossom),
+	@State private var showInventory: Bool = false
+	
+	private let columns: [GridItem] = [
+		GridItem(.flexible())
 	]
-	
-	//	var flowers: [Flower] {
-	//		moodEntry.compactMap { $0.flower }
-	//	}
-	
 	
 	var body: some View {
 		ZStack(alignment: .top) {
@@ -32,27 +34,32 @@ struct GardenView: View {
 				viewHeight: 400
 			)
 			
-			Image(systemName: "sun.max.fill")
+			Image(.customSun)
 				.foregroundStyle(.starshine)
 				.font(.system(size: 110))
 				.offset(x: 130)
-
-			
-			HStack(spacing: 0) {
-				ForEach(flowers.indices, id: \.self) { _ in
-					ZStack {
-						Image("hillBG")
-							.resizable()
-							.scaledToFill()
-							.scrollTransition(axis: .horizontal) { content, phase in
-								content
-									.offset(x: phase.value * -160)
-							}
+				.onTapGesture {
+					withAnimation(.bouncy()) {
+						showInventory.toggle()
 					}
-					.containerRelativeFrame(.horizontal)
 				}
-			}
-			.ignoresSafeArea()
+			
+			
+			//			HStack(spacing: 0) {
+			//				ForEach(flowers.indices, id: \.self) { _ in
+			//					ZStack {
+			//						Image("hillBG")
+			//							.resizable()
+			//							.scaledToFill()
+			//							.scrollTransition(axis: .horizontal) { content, phase in
+			//								content
+			//									.offset(x: phase.value * -160)
+			//							}
+			//					}
+			//					.containerRelativeFrame(.horizontal)
+			//				}
+			//			}
+			//			.ignoresSafeArea()
 			
 			
 			VStack(spacing: 0) {
@@ -60,18 +67,27 @@ struct GardenView: View {
 				
 				ZStack(alignment: .bottom) {
 					ScrollView(.horizontal, showsIndicators: false) {
-						HStack(spacing: 0) {
+						LazyHGrid(rows: columns) {
 							ForEach(flowers) { flower in
 								VStack(spacing: 6) {
-									Text(flower.ftype.rawValue)
-										.font(.caption)
-										.frame(width: 100, height: 30)
-										.background(.thinMaterial)
-										.clipShape(.rect(cornerRadius: 5))
+									FlowerView(flower: flower)
 									
-									Image(.customFlower)
-										.font(.system(size: 170))
-										.foregroundStyle(Color.pastel())
+									switch flower.growthStage {
+									case .seed:
+										EmptyView()
+									case .sprout:
+										Image(.customSprout)
+											.font(.system(size: 100))
+											.foregroundStyle(.leafyGreen)
+									case .flowering:
+										Image(.customFlower)
+											.font(.system(size: 100))
+											.foregroundStyle(flower.ftype.displayColor)
+									case .mature:
+										Image(.customFlower)
+											.font(.system(size: 170))
+											.foregroundStyle(flower.ftype.displayColor)
+									}
 								}
 								.frame(width: 240)
 								.containerRelativeFrame(.horizontal)
@@ -83,21 +99,99 @@ struct GardenView: View {
 								}
 							}
 						}
+						.frame(height: 120)
 					}
+					.scrollClipDisabled()
 					.scrollTargetBehavior(.paging)
 				}
 				
-				Rectangle()
-					.ignoresSafeArea()
-					.foregroundStyle(.leafyGreen)
-					.frame(height: 140)
+				// Grass
+				ZStack {
+					Rectangle()
+						.ignoresSafeArea()
+						.foregroundStyle(.leafyGreen)
+					
+					Button(action: {navController.navigateToRoot()}) {
+						Text("Exit")
+					}
+					.mainButtonStyle(
+						gradientColor1: .whisper,
+						fontColor: .black,
+						strokeColor: .mistyRose,
+						font: globalVM.currentTheme.bodyFont
+					)
+				}
+				.frame(height: 140)
 			}
 			
+			if showInventory {
+				SeedInventoryView(allMoodEntries: allMoodEntries)
+					.environmentObject(navController)
+					.offset(y: 140)
+			}
 		}
+		.navigationBarBackButtonHidden()
 	}
 }
 
+extension GardenView {
+	@Observable
+	final class ViewModel {
+		let modelContext: ModelContext
+		
+		init(modelContext: ModelContext) {
+			self.modelContext = modelContext
+		}
+		
+		func updateGrowth(for moodEntry: MoodEntry) {
+			guard let flower = moodEntry.flower,
+				  let plantedDate = flower.datePlanted else { return }
+			
+			let calendar = Calendar.current
+			let startOfPlantedDay = calendar.startOfDay(for: plantedDate)
+			let startOfToday = calendar.startOfDay(for: Date())
+			
+			let daysPassed = calendar.dateComponents([.day], from: startOfPlantedDay, to: startOfToday).day ?? 0
+			let newStage = flower.growthStage.nextStage(daysSincePlanting: daysPassed)
+			
+			if newStage != flower.growthStage {
+				moodEntry.flower!.growthStage = newStage
+				try? modelContext.save()
+			}
+		}
+	}
+	
+}
+
 #Preview {
-	GardenView()
+	NavigationStack {
+		let container = try! ModelContainer(
+			for: MoodEntry.self,
+			configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+		)
+		
+		let flowers: [FlowerType] = [.sunflower, .iris, .cosmos]
+		for type in flowers {
+			var flower = Flower(ftype: type)
+			flower.isPlanted = true
+			flower.datePlanted = Calendar.current.date(byAdding: .day, value: -2, to: .now)
+			
+			let entry = MoodEntry(
+				dateCreated: .now,
+				mood: .content,
+				journal: "Preview Entry"
+			)
+			entry.flower = flower
+			container.mainContext.insert(entry)
+		}
+		
+		return GardenView()
+			.modelContainer(container)
+			.environment(\.modelContext, container.mainContext)
+			.environmentObject(NavController())
+			.environment(GlobalVM())
+		
+		
+	}
 }
 
