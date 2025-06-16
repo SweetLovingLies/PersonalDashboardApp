@@ -67,7 +67,7 @@ struct MoodReflectionView: View {
 				
 				VStack {
 					Text(vm.feelingText)
-						.font(.custom(globalVM.currentTheme.bodyFont, size: GlobalVM.smallTitleFontSize))
+						.font(.custom("Fredoka-Regular", size: GlobalVM.bodyFontSize))
 						.foregroundStyle(globalVM.currentTheme.color(for: .textPrimary))
 					
 					ZStack(alignment: .topLeading) {

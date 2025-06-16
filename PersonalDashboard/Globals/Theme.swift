@@ -15,6 +15,7 @@ enum ColorPalette: String, Codable {
 	case magicalGirl
 	case apothecaryGirl
 	case femmeFatale
+	case ghostGirl
 }
 
 enum ThemeColorRole: Codable {
@@ -117,8 +118,8 @@ struct Theme: Identifiable, Equatable {
 			.textPrimary: .black,
 			.textSecondary: .white,
 			.textFieldPlaceholder: .black
-			]
-		)
+		]
+	)
 	
 	static let nightOwl = Theme(
 		colorPalette: .nightOwl,
@@ -138,8 +139,8 @@ struct Theme: Identifiable, Equatable {
 			.textPrimary: .white,
 			.textSecondary: .black,
 			.textFieldPlaceholder: .white
-			]
-		)
+		]
+	)
 	
 	static let magicalGirl = Theme(
 		colorPalette: .magicalGirl,
@@ -159,8 +160,8 @@ struct Theme: Identifiable, Equatable {
 			.textPrimary: .black,
 			.textSecondary: .black,
 			.textFieldPlaceholder: .black
-			]
-		)
+		]
+	)
 	
 	static let apothecaryGirl = Theme(
 		colorPalette: .apothecaryGirl,
@@ -204,6 +205,28 @@ struct Theme: Identifiable, Equatable {
 		]
 	)
 	
+	static let ghostGirl = Theme(
+		colorPalette: .ghostGirl,
+		headerFont: "Merriweather-Bold",
+		bodyFont: "Merriweather-Regular",
+		lightFont: "Merriweather-Light",
+		tsIcon: "custom.celticKnot",
+		tsBG: "ghostBG",
+		colorScheme: .light,
+		colorMap: [
+			.mainBG: .paleVeil,
+			.headerBG: .lavenderDust,
+			.accent1: .blushOfSleep,
+			.accent2: .hauntedPearl,
+			.accent3: .shadowCorset,
+			.textHeader: .black,
+			.textPrimary: .black,
+			.textSecondary: .white,
+			.textFieldPlaceholder: .black
+		]
+	)
 	
-	static let all: [Theme] = [.coquette, .summer, .eveningsInWinter, .nightOwl, .magicalGirl, .apothecaryGirl, .femmeFatale]
+	
+	
+	static let all: [Theme] = [.coquette, .summer, .eveningsInWinter, .nightOwl, .magicalGirl, .apothecaryGirl, .femmeFatale, ghostGirl]
 }

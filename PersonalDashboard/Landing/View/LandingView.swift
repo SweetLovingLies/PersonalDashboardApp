@@ -16,8 +16,8 @@ struct LandingView: View {
 	@EnvironmentObject var navController: NavController
 	
 	@Query private var allMoodEntries: [MoodEntry]
-
-		
+	
+	
 	var body: some View {
 		
 		ZStack {
@@ -173,6 +173,14 @@ struct LandingView: View {
 			
 			DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
 				float = true
+			}
+			
+			UNUserNotificationCenter.current().getNotificationSettings { settings in
+				if settings.authorizationStatus == .authorized {
+					vm.make530pmNotification()
+				} else {
+					print("Notification not authorized yet.")
+				}
 			}
 			
 			//			let fontFamilyNames = UIFont.familyNames

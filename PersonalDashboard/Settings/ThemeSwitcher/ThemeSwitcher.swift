@@ -22,7 +22,7 @@ struct ThemeSwitcher: View {
 	@State private var float = false
 	
 	var body: some View {
-
+		
 		ZStack {
 			if globalVM.currentTheme.tsBG != "" {
 				if r > 0.95 && globalVM.currentTheme == .apothecaryGirl {
@@ -40,13 +40,13 @@ struct ThemeSwitcher: View {
 				globalVM.currentTheme.color(for: .mainBG)
 					.ignoresSafeArea()
 			}
-
+			
 			ZStack {
 				Rectangle()
 					.foregroundStyle(.ultraThinMaterial.opacity(0.8))
-					.frame(height: 500)
+					.frame(height: 600)
 					.clipShape(.rect(cornerRadius: 40))
-					.overlay(RoundedRectangle(cornerRadius: 40).stroke(.white, lineWidth: 4))
+					.overlay(RoundedRectangle(cornerRadius: 40).stroke(globalVM.currentTheme.color(for: .accent1), lineWidth: 4))
 					.padding(.horizontal, 10)
 				
 				LazyVGrid(columns: columns) {
@@ -63,9 +63,9 @@ struct ThemeSwitcher: View {
 			.onAppear {float = true}
 			.animation(.easeInOut(duration: 2).repeatForever(autoreverses: true), value: float)
 		}
-//		.onAppear {
-//			print(r)
-//		}
+		//		.onAppear {
+		//			print(r)
+		//		}
 	}
 }
 
@@ -75,37 +75,46 @@ struct IconView: View {
 	let isSelected: Bool
 	let onSelect: () -> Void
 	
-	@State private var float = false
-	
 	var body: some View {
 		ZStack {
 			if theme.tsIcon.contains("custom") {
-				Image(theme.tsIcon)
-					.shadowOutlineStyle(color: .white, radius: 0, range: 2)
-					.font(.system(size: isSelected ? 100 : 70))
-					.foregroundStyle(theme.color(for: .accent1))
-					.offset(y: float ? -4 : 4)
-					.animation(.easeInOut(duration: 2).repeatForever(autoreverses: true), value: float)
+				ZStack {
+					theme.color(for: .accent2).opacity(0.6)
+						.clipShape(RoundedRectangle(cornerRadius: 15))
+						.overlay(RoundedRectangle(cornerRadius: 15)
+							.stroke(.white, lineWidth: isSelected ? 6 : 4))
+					Image(theme.tsIcon)
+						.padding(5)
+						.font(.system(size: isSelected ? 100 : 70))
+						.foregroundStyle(theme.color(for: .accent1))
+						.onTapGesture {
+							onSelect()
+						}
+				}
+				.frame(width: 100, height: 100)
 				
-				
-					.onAppear {float = true}
-					.onTapGesture {
-						onSelect()
-					}
 			} else {
-				Image(systemName: theme.tsIcon)
-					.shadowOutlineStyle(color: .white, radius: 0, range: 2)
-					.font(.system(size: isSelected ? 100 : 70))
-					.foregroundStyle(theme.color(for: .accent1))
-					.offset(y: float ? -4 : 4)
-					.animation(.easeInOut(duration: 2).repeatForever(autoreverses: true), value: float)
-
-					.onAppear {float = true}
-					.onTapGesture {
-						onSelect()
-					}
+				ZStack {
+					theme.color(for: .accent2).opacity(0.6)
+						.aspectRatio(1, contentMode: .fill)
+						.clipShape(RoundedRectangle(cornerRadius: 15))
+						.overlay(RoundedRectangle(cornerRadius: 15)
+							.stroke(.white, lineWidth: isSelected ? 6 : 4))
+					
+					
+					Image(systemName: theme.tsIcon)
+						.padding(5)
+						.font(.system(size: isSelected ? 100 : 70))
+						.foregroundStyle(theme.color(for: .accent1))
+					
+						.onTapGesture {
+							onSelect()
+						}
+				}
+				.frame(width: 100, height: 100)
+				
+				
 			}
-			
 		}
 		.padding()
 	}

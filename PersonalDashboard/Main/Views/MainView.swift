@@ -56,10 +56,7 @@ struct MainView: View {
 	]
 	
 	let sampleTodo: [ToDoItem] = [
-		ToDoItem(title: "Notes Section"),
-		ToDoItem(title: "Daily Mood Tracker"),
-		ToDoItem(title: "Habit Tracker"),
-		ToDoItem(title: "Make a simple version of SP")
+		ToDoItem(title: "Make a cup of coffee")
 	]
 	
 	for todo in sampleTodo {

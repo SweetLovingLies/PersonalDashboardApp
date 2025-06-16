@@ -15,18 +15,35 @@ class TodoViewModel: ObservableObject {
 	@Published var selectedTime: Date
 	@Published var showDatePicker: Bool
 	
-	func makeNotifications() {
+	func makeNotifications(item: ToDoItem) {
+		guard let reminderTime = item.reminderTime else {
+			print("No reminder time set.")
+			return
+		}
+		
 		let content = UNMutableNotificationContent()
 		content.title = "Here's your reminder!"
-		content.subtitle = "Complete this task: \(newTaskTitle)!"
-		content.sound = UNNotificationSound.default
+		content.subtitle = "Complete this task: \(item.title)!"
+		content.sound = .default
 		
-		let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
+		let triggerDate = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: reminderTime)
+		let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDate, repeats: false)
 		
-		let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+		let request = UNNotificationRequest(
+			identifier: item.id.uuidString, // Use UUID so it can be removed/rescheduled later
+			content: content,
+			trigger: trigger
+		)
 		
-		UNUserNotificationCenter.current().add(request)
+		UNUserNotificationCenter.current().add(request) { error in
+			if let error = error {
+				print("Notification error: \(error)")
+			} else {
+				print("Notification set for \(reminderTime)")
+			}
+		}
 	}
+
 	
 	init(newTaskTitle: String = "", showToolbar: Bool = false, selectedTime: Date = Date(), showDatePicker: Bool = false) {
 		self.newTaskTitle = newTaskTitle

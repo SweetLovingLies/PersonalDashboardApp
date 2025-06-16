@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UserNotifications
 
 extension LandingView {
 	@Observable
@@ -78,7 +79,6 @@ extension LandingView {
 			}
 		}
 		
-		
 		func getAffirmationForToday() -> String {
 			let calendar = Calendar.current
 			let date = Date()
@@ -86,6 +86,37 @@ extension LandingView {
 			
 			// Just rotate through affirmations based on the day
 			return affirmations[dayOfYear % affirmations.count]
+		}
+		
+		func make530pmNotification() {
+			let hasScheduled = UserDefaults.standard.bool(forKey: "hasScheduled530Notification")
+			
+			guard !hasScheduled else {
+				print("Notification already scheduled.")
+				return
+			}
+			
+			let content = UNMutableNotificationContent()
+			content.title = "Hey... it's been a while?"
+			content.subtitle = "How are you doing? Would you like to check in?"
+			content.sound = UNNotificationSound.default
+			
+			var dateComponents = DateComponents()
+			dateComponents.hour = 17
+			dateComponents.minute = 30
+			
+			let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
+			
+			let request = UNNotificationRequest(identifier: "daily530Notification", content: content, trigger: trigger)
+			
+			UNUserNotificationCenter.current().add(request) { error in
+				if let error = error {
+					print("Notification scheduling error: \(error)")
+				} else {
+					UserDefaults.standard.set(true, forKey: "hasScheduled530Notification")
+					print("Notification scheduled for 5:30 PM daily!")
+				}
+			}
 		}
 	}
 }

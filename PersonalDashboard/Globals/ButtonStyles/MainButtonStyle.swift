@@ -72,20 +72,20 @@ struct MainButtonStyle: ViewModifier {
 			// Stroke Overlays
 			
 			// Dot Shine 1
-				.overlay(
-					Capsule()
-						.foregroundStyle(.white)
-						.frame(width: 10, height: 8)
-						.offset(x: 17, y: -24)
-				)
-			
+//				.overlay(
+//					Capsule()
+//						.foregroundStyle(.white)
+//						.frame(width: 10, height: 8)
+//						.offset(x: 17, y: -24)
+//				)
+//			
 			// Dot Shine 2
-				.overlay(
-					Capsule()
-						.foregroundStyle(.white)
-						.frame(width: 7, height: 5)
-						.offset(x: 29, y: -24)
-				)
+//				.overlay(
+//					Capsule()
+//						.foregroundStyle(.white)
+//						.frame(width: 7, height: 5)
+//						.offset(x: 29, y: -24)
+//				)
 			
 			
 			// Shine Overlay

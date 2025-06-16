@@ -25,8 +25,6 @@ struct SettingsTabView: View {
 					}
 					.tag(settingsTypes.settings)
 				
-				
-				
 				ThemeSwitcher()
 					.tabItem {
 						Label("Themeswitcher", image: "custom.cloud")

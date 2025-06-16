@@ -134,7 +134,7 @@ struct TodoAddItemView: View {
 						modelContext.insert(newTask)
 						try? modelContext.save()
 						
-						vm.makeNotifications()
+						vm.makeNotifications(item: newTask)
 						
 						
 						isFocused = false
@@ -145,6 +145,7 @@ struct TodoAddItemView: View {
 					.font(.custom(globalVM.currentTheme.bodyFont, size: GlobalVM.buttonFontSize))
 					.foregroundStyle(globalVM.currentTheme.color(for: .textSecondary))
 				}
+				.frame(height: 40)
 				.padding(.horizontal, 10)
 				.padding(.bottom)
 				
@@ -177,6 +178,7 @@ struct TodoAddItemView: View {
 						
 						.onDelete { indexSet in
 							for index in indexSet {
+								UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [todoItems[index].id.uuidString])
 								modelContext.delete(todoItems[index])
 							}
 						}
