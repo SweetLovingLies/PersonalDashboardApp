@@ -12,7 +12,7 @@ import UserNotifications
 struct TodoAddItemView: View {
 	@Environment(\.modelContext) private var modelContext
 	@Environment(GlobalVM.self) private var globalVM
-	@State private var vm = TodoViewModel()
+	@StateObject private var vm = TodoViewModel()
 	
 	@FocusState private var isFocused: Bool
 	
@@ -150,31 +150,38 @@ struct TodoAddItemView: View {
 				
 				// MARK: List
 				List {
-					ForEach(todoItems, id: \.self) { item in
-						ToDoItemView(todoItem: item)
+					if todoItems.isEmpty {
+						ToDoItemView(todoItem: ToDoItem(title: "I'm getting bored over here..."))
 							.listRowSeparator(.hidden)
 							.listRowBackground(Color.clear)
-							.onTapGesture {
-								item.isCompleted.toggle()
-								item.completedAt = .now
+					} else {
+						ForEach(todoItems, id: \.self) { item in
+							ToDoItemView(todoItem: item)
+								.listRowSeparator(.hidden)
+								.listRowBackground(Color.clear)
+								.onTapGesture {
+									item.isCompleted.toggle()
+									item.completedAt = .now
+								}
+						}
+						.onMove { from, to in
+							var updatedItems = todoItems
+							updatedItems.move(fromOffsets: from, toOffset: to)
+							
+							for i in updatedItems.indices {
+								updatedItems[i].sortOrder = i
 							}
-					}
-					.onMove { from, to in
-						var updatedItems = todoItems
-						updatedItems.move(fromOffsets: from, toOffset: to)
-
-						for i in updatedItems.indices {
-							updatedItems[i].sortOrder = i
+							
+							try? modelContext.save()
 						}
-
-						try? modelContext.save()
-					}
-
-					.onDelete { indexSet in
-						for index in indexSet {
-							modelContext.delete(todoItems[index])
+						
+						.onDelete { indexSet in
+							for index in indexSet {
+								modelContext.delete(todoItems[index])
+							}
 						}
 					}
+						
 				}
 				.listStyle(.plain)
 				.listRowSpacing(20)

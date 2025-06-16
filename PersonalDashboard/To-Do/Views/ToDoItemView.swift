@@ -10,7 +10,6 @@ import SwiftUI
 struct ToDoItemView: View {
 	@State var todoItem: ToDoItem
 	@Environment(GlobalVM.self) var globalVM
-	@State private var viewModel = TodoViewModel()
 	
     var body: some View {
 		VStack {

@@ -9,12 +9,11 @@ import SwiftUI
 import UserNotifications
 import SwiftData
 
-@Observable
-class TodoViewModel {
-	var newTaskTitle: String
-	var showToolbar: Bool
-	var selectedTime: Date
-	var showDatePicker: Bool
+class TodoViewModel: ObservableObject {
+	@Published var newTaskTitle: String
+	@Published var showToolbar: Bool
+	@Published var selectedTime: Date
+	@Published var showDatePicker: Bool
 	
 	func makeNotifications() {
 		let content = UNMutableNotificationContent()
