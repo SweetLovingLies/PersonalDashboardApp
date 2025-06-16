@@ -50,13 +50,13 @@ struct MoodReflectionView: View {
 							.offset(x: -150)
 						
 					case "day":
-						Image(systemName: "sun.max.fill")
+						Image(.customSun)
 							.foregroundStyle(.starshine)
 							.font(.system(size: 60))
 							.offset(x: 160)
 						
 					default:
-						Image(systemName: "sun.max.fill")
+						Image(.customSun)
 							.foregroundStyle(.starshine)
 							.font(.system(size: 60))
 							.offset(x: -150)
