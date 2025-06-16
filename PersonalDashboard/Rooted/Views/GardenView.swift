@@ -9,6 +9,7 @@ import SwiftUI
 import SwiftData
 
 struct GardenView: View {
+	@Environment(\.modelContext) private var modelContext
 	@Environment(GlobalVM.self) private var globalVM
 	@EnvironmentObject var navController: NavController
 	@Query private var allMoodEntries: [MoodEntry]
@@ -24,25 +25,63 @@ struct GardenView: View {
 		GridItem(.flexible())
 	]
 	
+	@State private var vm: ViewModel = ViewModel()
+	
+	
 	var body: some View {
 		ZStack(alignment: .top) {
-			Color.blue.opacity(0.4).ignoresSafeArea()
 			
-			SkyView(
-				cloudSize: 120,
-				viewWidth: UIScreen.main.bounds.width,
-				viewHeight: 400
-			)
+			switch vm.timeOfDay {
+			case "day":
+				Color.blue.opacity(0.4).ignoresSafeArea()
+			case "night":
+				Color.urbanSky.ignoresSafeArea()
+			default:
+				Color.sunDown.ignoresSafeArea()
+			}
 			
-			Image(.customSun)
-				.foregroundStyle(.starshine)
-				.font(.system(size: 110))
-				.offset(x: 130)
-				.onTapGesture {
-					withAnimation(.bouncy()) {
-						showInventory.toggle()
+			if vm.timeOfDay == "day" {
+				SkyView(
+					cloudSize: 120,
+					viewWidth: UIScreen.main.bounds.width,
+					viewHeight: 400
+				)
+			}
+			
+			switch vm.timeOfDay {
+			case "night":
+				Image(systemName: "moon.fill")
+					.foregroundStyle(.amberLight)
+					.font(.system(size: 110))
+					.offset(x: -110)
+					.onTapGesture {
+						withAnimation(.bouncy()) {
+							showInventory.toggle()
+						}
 					}
-				}
+				
+			case "day":
+				Image(.customSun)
+					.foregroundStyle(.starshine)
+					.font(.system(size: 110))
+					.offset(x: 130)
+					.onTapGesture {
+						withAnimation(.bouncy()) {
+							showInventory.toggle()
+						}
+					}
+				
+			default:
+				Image(.customSun)
+					.foregroundStyle(.fallHourLeaf)
+					.font(.system(size: 110))
+					.offset(x: -110)
+					.onTapGesture {
+						withAnimation(.bouncy()) {
+							showInventory.toggle()
+						}
+					}
+			}
 			
 			
 			//			HStack(spacing: 0) {
@@ -107,9 +146,21 @@ struct GardenView: View {
 				
 				// Grass
 				ZStack {
+					var grassColor: Color {
+						switch vm.timeOfDay {
+						case "day":
+							return .leafyGreen
+						case "night":
+							return .ebonyLeaf
+							default:
+							return .fallHourLeaf
+						}
+					}
+					
+					
 					Rectangle()
 						.ignoresSafeArea()
-						.foregroundStyle(.leafyGreen)
+						.foregroundStyle(grassColor)
 					
 					Button(action: {navController.navigateToRoot()}) {
 						Text("Exit")
@@ -131,15 +182,22 @@ struct GardenView: View {
 			}
 		}
 		.navigationBarBackButtonHidden()
+		.onAppear {
+			if vm.modelContext == nil {
+				vm.modelContext = modelContext
+			}
+		}
+		
 	}
 }
 
 extension GardenView {
 	@Observable
 	final class ViewModel {
-		let modelContext: ModelContext
 		
-		init(modelContext: ModelContext) {
+		var modelContext: ModelContext?
+		
+		init(modelContext: ModelContext? = nil) {
 			self.modelContext = modelContext
 		}
 		
@@ -156,7 +214,22 @@ extension GardenView {
 			
 			if newStage != flower.growthStage {
 				moodEntry.flower!.growthStage = newStage
-				try? modelContext.save()
+				try? modelContext!.save()
+			}
+		}
+				
+		var timeOfDay: String {
+			let hour = Calendar.current.component(.hour, from: Date())
+			
+			// 12 - 5am or 4 - 8pm
+			if hour >= 0 && hour < 5 || hour >= 17 && hour < 20 {
+				return "transitional"
+				// 5am - 5pm
+			} else if hour >= 5 && hour < 17 {
+				return "day"
+				// 8pm to 12am
+			} else {
+				return "night"
 			}
 		}
 	}
@@ -190,6 +263,7 @@ extension GardenView {
 			.environment(\.modelContext, container.mainContext)
 			.environmentObject(NavController())
 			.environment(GlobalVM())
+		
 		
 		
 	}
