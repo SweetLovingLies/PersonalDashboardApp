@@ -71,20 +71,17 @@ struct LandingView: View {
 					
 					VStack {
 						// Header
-						HStack(alignment: .bottom) {
-							Image(.customCloud)
-								.foregroundStyle(.white)
-								.font(.system(size: 35))
-							
-							Text("How are you feeling?")
-								.font(.custom(globalVM.currentTheme.bodyFont, size: GlobalVM.smallTitleFontSize))
-								.bold()
-								.padding(.top, 20)
-								.foregroundStyle(globalVM.currentTheme.color(for: .textPrimary))
-							
-							Image(.customCloud)
-								.foregroundStyle(.white)
-								.font(.system(size: 35))
+						GeometryReader { geo in
+							ZStack {
+								SkyView(cloudSize: 35, viewWidth: geo.size.width, viewHeight: 100)
+								HStack(alignment: .bottom) {
+									Text("How are you feeling?")
+										.font(.custom(globalVM.currentTheme.bodyFont, size: GlobalVM.smallTitleFontSize))
+										.bold()
+										.padding(.top, 20)
+										.foregroundStyle(globalVM.currentTheme.color(for: .textPrimary))
+								}
+							}
 						}
 						
 						// Picker

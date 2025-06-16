@@ -270,7 +270,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = PersonalDashboard/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Hana Spot";
+				INFOPLIST_KEY_CFBundleDisplayName = Hanasato;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -304,7 +304,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = PersonalDashboard/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Hana Spot";
+				INFOPLIST_KEY_CFBundleDisplayName = Hanasato;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
