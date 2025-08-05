@@ -20,7 +20,9 @@ struct TodoHistoryView: View {
 		})
 	}
 	
-    var body: some View {
+	@State private var showAlert: Bool = false
+	
+	var body: some View {
 		ZStack {
 			globalVM.currentTheme.color(for: .mainBG)
 				.ignoresSafeArea()
@@ -32,44 +34,50 @@ struct TodoHistoryView: View {
 					
 					Text("History")
 						.font(.custom(globalVM.currentTheme.headerFont, size: GlobalVM.headerFontSize))
-							.foregroundStyle(globalVM.currentTheme.color(for: .textHeader))
+						.foregroundStyle(globalVM.currentTheme.color(for: .textHeader))
 				}
 				.frame(height: GlobalVM.headerHeight)
 				
 				// MARK: Toolbar
-					if vm.showToolbar {
-						ZStack() {
-							globalVM.currentTheme.color(for: .accent1)
+				if vm.showToolbar {
+					ZStack() {
+						globalVM.currentTheme.color(for: .accent1)
+						
+						HStack {
+							Spacer()
+							Button(action: {showAlert = true}) {
+								Text("Clear History")
+							}
+							.buttonStyle(.borderedProminent)
+							.padding(.leading, 10)
+							.tint(globalVM.currentTheme.color(for: .accent3))
+							.font(.custom(globalVM.currentTheme.bodyFont, size: GlobalVM.buttonFontSize))
+							.alert(isPresented: $showAlert) {
+								Alert(
+									title: Text("Are you sure you want to clear your history!?"),
+									message: Text("This action cannot be undone!"),
+									primaryButton: .destructive(Text("Delete")) {
+										for item in todoItems {
+											modelContext.delete(item)
+											try? modelContext.save()
+										}
+									},
+									secondaryButton: .cancel()
+								)
+							}
 							
-							HStack {
-								Button(action: {
-									for item in todoItems {
-										modelContext.delete(item)
-										try? modelContext.save()
-									}
-								}) {
-									Text("Clear")
-								}
+							EditButton()
 								.buttonStyle(.borderedProminent)
-								.padding(.leading, 10)
 								.tint(globalVM.currentTheme.color(for: .accent3))
 								.font(.custom(globalVM.currentTheme.bodyFont, size: GlobalVM.buttonFontSize))
-								.foregroundStyle(.red)
-								
-								Spacer()
-								
-								EditButton()
-									.buttonStyle(.borderedProminent)
-									.tint(globalVM.currentTheme.color(for: .accent3))
-									.font(.custom(globalVM.currentTheme.bodyFont, size: GlobalVM.buttonFontSize))
-									.foregroundStyle(globalVM.currentTheme.color(for: .textSecondary))
-									.padding(.trailing, 10)
-							}
+								.foregroundStyle(globalVM.currentTheme.color(for: .textSecondary))
+								.padding(.trailing, 10)
 						}
-						.frame(height: 50)
-						.transition(.move(edge: .top))
-						.zIndex(-1) // Forces the bar behind the header
 					}
+					.frame(height: 50)
+					.transition(.move(edge: .top))
+					.zIndex(-1) // Forces the bar behind the header
+				}
 				
 				// MARK: Button
 				HStack {
@@ -111,6 +119,7 @@ struct TodoHistoryView: View {
 						ToDoItemView(todoItem: completedVille)
 							.listRowSeparator(.hidden)
 							.listRowBackground(Color.clear)
+							.opacity(0.4)
 							.onAppear{
 								completedVille.isCompleted = true
 								completedVille.completedAt = .distantPast
@@ -119,7 +128,7 @@ struct TodoHistoryView: View {
 					.listStyle(.plain)
 					.listRowSpacing(20)
 					.scrollContentBackground(.hidden)
-		
+					
 				} else {
 					List(todoItems, id: \.self) { item in
 						ToDoItemView(todoItem: item)
@@ -138,11 +147,11 @@ struct TodoHistoryView: View {
 				Spacer()
 			}
 		}
-    }
+	}
 }
 
 #Preview {
-    TodoHistoryView()
+	TodoHistoryView()
 		.environment(GlobalVM())
 		.environmentObject(TodoViewModel())
 }

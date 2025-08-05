@@ -90,5 +90,33 @@ extension FlowerType {
 			return result
 		}
 	}
+	
+	// MARK: List of others needed:
+	// Note: All of them will have a custom icon later. For now though, these go based on importance (to me)
+	/// Cactus
+	/// Red Capped Mushroom
+	/// Clover
+	/// Wisteria
+	/// Lotus
+	/// Water Lily
+	/// Hydrangeas
+	/// Lily of the Valley
+	/// Bluebell
+	/// Bleeding Heart
+	
+	
+	
+	var imageType: String {
+		switch self {
+		case .cactus:
+			return "custom.cactus"
+		case .redCap:
+			return "custom.redCap"
+		case .clover:
+			return "custom.clover"
+		default:
+			return "custom.flower"
+		}
+	}
 }
 

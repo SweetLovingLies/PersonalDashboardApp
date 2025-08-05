@@ -13,7 +13,7 @@ import SwiftData
 struct MainView: View {
 	@Environment(GlobalVM.self) private var globalVM
 	@EnvironmentObject var navController: NavController
-	@State private var currentSection: NavSection = .landing
+	@State private var currentSection: NavSection = .stats
 	
 	var body: some View {
 		NavigationStack(path: $navController.path) {

@@ -56,7 +56,7 @@ class StatsVM {
 		}
 	}
 
-	// MARK: Computed Stats
+	// MARK: Pomodoro Stats
 	var totalTimeWorked: TimeInterval {
 		sessions.reduce(0) { $0 + $1.timeWorked }
 	}
@@ -73,10 +73,11 @@ class StatsVM {
 		return dailyCounts.map(Double.init).average()
 	}
 
-	var streaks: (current: Int, longest: Int) {
+	var pomoStreaks: (current: Int, longest: Int) {
 		calculateStreaks(from: sessions.map { $0.date })
 	}
-
+	
+	// MARK: To-do Stats
 	var totalTasksCompleted: Int {
 		todoTasks.filter { $0.completedAt != nil }.count
 	}
@@ -93,7 +94,8 @@ class StatsVM {
 		let completedDates = todoTasks.compactMap { $0.completedAt }
 		return calculateStreaks(from: completedDates)
 	}
-
+	
+	// MARK: Helper Functions
 	private func calculateStreaks(from dates: [Date]) -> (current: Int, longest: Int) {
 		let uniqueDays = Set(dates.map { Calendar.current.startOfDay(for: $0) })
 		let sortedDays = uniqueDays.sorted()

@@ -155,6 +155,7 @@ struct TodoAddItemView: View {
 						ToDoItemView(todoItem: ToDoItem(title: "I'm getting bored over here..."))
 							.listRowSeparator(.hidden)
 							.listRowBackground(Color.clear)
+							.opacity(0.4)
 					} else {
 						ForEach(todoItems, id: \.self) { item in
 							ToDoItemView(todoItem: item)

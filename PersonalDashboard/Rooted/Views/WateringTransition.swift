@@ -17,23 +17,10 @@ struct WateringTransition: View {
 	@EnvironmentObject var navController: NavController
 	@State var seed: MoodEntry
 	
-	
-	
     var body: some View {
 		ZStack(alignment: .top) {
 			Color.blue.opacity(0.4).ignoresSafeArea()
-			
-			Image(.customSun)
-				.foregroundStyle(.starshine)
-				.font(.system(size: 110))
-				.offset(x: 130)
-			
-			Image(.rainbowLonger)
-				.resizable()
-				.scaleEffect(x: -1)
-				.offset(x: -210)
-				.opacity(0.6)
-				.blur(radius: 2)
+
 	
 			VStack {
 				RainCloudView()
@@ -83,13 +70,13 @@ struct RainCloudView: View {
 	
 	private var drops: [Drop] = (0..<15).map { _ in
 		Drop(
-			x: CGFloat.random(in: -120...120),          // tweak spread
+			x: CGFloat.random(in: -100...100),          // tweak spread
 			duration: Double.random(in: 1.0...2.2)    // varied speed
 		)
 	}
 
 	var body: some View {
-		VStack {
+		VStack(spacing: 0) {
 			Image(systemName: "cloud.fill")
 				.resizable()
 				.frame(width: cloudWidth, height: cloudWidth * 0.65)

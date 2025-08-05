@@ -14,9 +14,9 @@ struct LandingView: View {
 	@State private var currentAffirmation: String = ""
 	@State private var float = false
 	@EnvironmentObject var navController: NavController
+	@Environment(\.modelContext) private var modelContext
 	
-	@Query private var allMoodEntries: [MoodEntry]
-	
+	@State private var allMoodEntries: [MoodEntry] = []
 	
 	var body: some View {
 		
@@ -134,10 +134,11 @@ struct LandingView: View {
 										}
 										.mainButtonStyle(
 											gradientColor1: globalVM.currentTheme.color(for: .accent2),
-											fontColor: globalVM.currentTheme.color(for: .textPrimary),
+											fontColor: vm.selectedMood == .placeholder ? .gray : globalVM.currentTheme.color(for: .textPrimary),
 											strokeColor: globalVM.currentTheme.color(for: .accent1),
 											font: globalVM.currentTheme.bodyFont
 										)
+										.disabled(vm.selectedMood == .placeholder)
 									}
 									
 									Button(action:{navController.navigate(to: .garden)}) {
@@ -162,8 +163,6 @@ struct LandingView: View {
 				.padding(.horizontal, 30)
 				
 				Spacer()
-				
-				
 			}
 		}
 		.onAppear {
@@ -183,13 +182,24 @@ struct LandingView: View {
 				}
 			}
 			
-			//			let fontFamilyNames = UIFont.familyNames
-			//			for familyName in fontFamilyNames {
-			//
-			//				print("Font Family Name = [\(familyName)]")
-			//				let names = UIFont.fontNames(forFamilyName: familyName)
-			//				print("Font Names = [\(names)]")
-			//			}
+			// Not sure why regular querying doesn't work, but this does.
+			Task {
+				do {
+					let descriptor = FetchDescriptor<MoodEntry>()
+					allMoodEntries = try modelContext.fetch(descriptor)
+				} catch {
+					print("💥 Failed to fetch MoodEntries: \(error.localizedDescription)")
+				}
+			}
+			
+			// MARK: For Font Names
+//			let fontFamilyNames = UIFont.familyNames
+//			for familyName in fontFamilyNames {
+//				
+//				print("Font Family Name = [\(familyName)]")
+//				let names = UIFont.fontNames(forFamilyName: familyName)
+//				print("Font Names = [\(names)]")
+//			}
 		}
 	}
 }

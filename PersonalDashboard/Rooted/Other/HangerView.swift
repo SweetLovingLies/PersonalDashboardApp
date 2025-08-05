@@ -29,19 +29,22 @@ struct FlowerView: View {
 			
 			VStack {
 				Text(flower.ftype.rawValue)
+					.minimumScaleFactor(0.4)
+					.lineLimit(1)
+					.font(.custom("Fredoka-Medium", size: GlobalVM.headlineFontSize))
 					.bold()
 				
 				Text(flower.growthStage.ageState())
-					.font(.caption)
 				
 				Text("Date Planted:")
-					.font(.caption)
 					.bold()
 				Text(flower.getDatePlanted())
-					.font(.caption)
 				
 			}
-			.frame(width: 100)
+			.font(.custom("Fredoka-Medium", size: GlobalVM.captionFontSize))
+			.foregroundStyle(.black)
+			.frame(width: 110)
+			.padding(5)
 
 			.multilineTextAlignment(.center)
 			

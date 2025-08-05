@@ -3,4 +3,38 @@
    uuid = "62C30292-FCF5-409E-B012-8E9B48F2421A"
    type = "1"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "E581EA59-7563-44E6-8E89-136EC0A8338A"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../../../../../../var/folders/tm/xkmvrzd17njfs00b624y30040000gp/T/swift-generated-sources/@__swiftmacro_17PersonalDashboard11LandingViewV14allMoodEntries33_A26F399503438F8EE3F26602C0B4DC56LL5QueryfMa_.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1"
+            endingLineNumber = "1"
+            landmarkName = "unknown"
+            landmarkType = "0">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "6A467365-5A1E-4473-8DFF-BB6809D7442E"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../../../../../../var/folders/tm/xkmvrzd17njfs00b624y30040000gp/T/swift-generated-sources/@__swiftmacro_17PersonalDashboard11LandingViewV14allMoodEntries33_A26F399503438F8EE3F26602C0B4DC56LL5QueryfMa_.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "2"
+            endingLineNumber = "2"
+            landmarkName = "unknown"
+            landmarkType = "0">
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>

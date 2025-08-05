@@ -18,7 +18,7 @@ extension LandingView {
 			"I am proud of how far I've come.",
 			"My feelings are valid and important.",
 			"I trust myself to make the right choices.",
-			"I radiate calm and peace.",
+			"I radiate calmness and peace.",
 			"Mistakes are part of growth.",
 			"I don’t need to have it all figured out.",
 			"I am more than my productivity.",
@@ -67,8 +67,8 @@ extension LandingView {
 			"Today, I will work through my challenges.",
 			"I am open and ready to learn."
 		]
-		let moods: [Mood] = Mood.allMoods
-		var selectedMood: Mood = .happy
+		let moods: [Mood] = Mood.allMoods 
+		var selectedMood: Mood = .placeholder
 		
 		func didLogMoodToday(entries: [MoodEntry]) -> Bool {
 			let calendar = Calendar.current
@@ -91,13 +91,10 @@ extension LandingView {
 		func make530pmNotification() {
 			let hasScheduled = UserDefaults.standard.bool(forKey: "hasScheduled530Notification")
 			
-			guard !hasScheduled else {
-				print("Notification already scheduled.")
-				return
-			}
+			guard !hasScheduled else {return}
 			
 			let content = UNMutableNotificationContent()
-			content.title = "Hey... it's been a while?"
+			content.title = "Hey! it's been a while!"
 			content.subtitle = "How are you doing? Would you like to check in?"
 			content.sound = UNNotificationSound.default
 			

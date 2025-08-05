@@ -12,32 +12,40 @@ struct ToDoItemView: View {
 	@Environment(GlobalVM.self) var globalVM
 	
     var body: some View {
-		VStack {
-			HStack {
+		VStack(alignment: .leading) {
+			HStack(alignment: .top) {
 				Image(systemName: todoItem.isCompleted ? "checkmark.square.fill" : "square")
 					.foregroundStyle(todoItem.isCompleted ? globalVM.currentTheme.color(for: .accent3) : .gray)
 					.font(.system(size: 25))
+					.padding(.trailing, 10)
 				
-				Text(todoItem.title)
-					.font(.custom(globalVM.currentTheme.bodyFont, size: GlobalVM.bodyFontSize))
-					.strikethrough(todoItem.isCompleted)
-					.animation(.default, value: todoItem.isCompleted)
-					.multilineTextAlignment(.leading)
-					.foregroundStyle(globalVM.currentTheme.color(for: .textPrimary))
-				
-				Spacer()
-				
-				VStack{
-					Spacer()
-					if let reminder = todoItem.reminderTime {
-						Text("Reminder Time: \(reminder.formatted(date: .omitted, time: .shortened))")
-							.font(.custom(globalVM.currentTheme.lightFont, size: GlobalVM.captionFontSize))
-					} else if let completedAt = todoItem.completedAt {
-						Text("Completed at: \(completedAt.formatted(date: .omitted, time: .shortened))")
-							.font(.custom(globalVM.currentTheme.lightFont, size: GlobalVM.captionFontSize))
+				VStack(alignment: .leading, spacing: 0) {
+					Text(todoItem.title)
+						.font(.custom(globalVM.currentTheme.bodyFont, size: GlobalVM.bodyFontSize))
+						.foregroundStyle(globalVM.currentTheme.color(for: .textPrimary))
+					
+						.strikethrough(todoItem.isCompleted)
+						.animation(.default, value: todoItem.isCompleted)
+					
+						.fixedSize(horizontal: false, vertical: true)
+						.multilineTextAlignment(.leading)
+						.lineLimit(3)
+
+					
+					
+					VStack {
+						if let reminder = todoItem.reminderTime {
+							Text("Reminder: \(reminder.formatted(date: .complete, time: .shortened))")
+								.font(.custom(globalVM.currentTheme.lightFont, size: GlobalVM.captionFontSize))
+								.foregroundStyle(globalVM.currentTheme.color(for: .textPrimary).opacity(0.5))
+						} else if let completedAt = todoItem.completedAt {
+							Text("Completed: \(completedAt.formatted(date: .complete, time: .shortened))")
+								.font(.custom(globalVM.currentTheme.lightFont, size: GlobalVM.captionFontSize))
+								.foregroundStyle(globalVM.currentTheme.color(for: .textPrimary).opacity(0.5))
+						}
 					}
+					.frame(maxHeight: .infinity)
 				}
-				.frame(maxHeight: .infinity)
 			}
 
 			Rectangle()
@@ -49,6 +57,7 @@ struct ToDoItemView: View {
 }
 
 #Preview {
-	ToDoItemView(todoItem: ToDoItem(title: "Test", reminderTime: .now))
+	ToDoItemView(todoItem: ToDoItem(title: "This is a really long to-do item, meant for testing text wrapping!", reminderTime: .now))
 		.environment(GlobalVM())
 }
+

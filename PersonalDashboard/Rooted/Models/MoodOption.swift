@@ -8,6 +8,7 @@
 import Foundation
 
 enum MoodOption: String, CaseIterable, Codable {
+	case scrollToPick = "Scroll here!"
 	case happy = "Happy"
 	case sad = "Sad"
 	case anxious = "Anxious"
@@ -106,6 +107,8 @@ extension MoodOption {
 			return [.forgetMeNot, .camellia, .chamomile, .edelweiss]
 		case .playful:
 			return [.pansy, .cosmos, .buttercup, .daffodil]
+		case .scrollToPick:
+			return [.cherryBlossom]
 		}
 	}
 }

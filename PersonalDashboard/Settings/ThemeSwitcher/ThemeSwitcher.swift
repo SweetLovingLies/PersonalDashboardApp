@@ -44,24 +44,26 @@ struct ThemeSwitcher: View {
 			ZStack {
 				Rectangle()
 					.foregroundStyle(.ultraThinMaterial.opacity(0.8))
-					.frame(height: 600)
 					.clipShape(.rect(cornerRadius: 40))
 					.overlay(RoundedRectangle(cornerRadius: 40).stroke(globalVM.currentTheme.color(for: .accent1), lineWidth: 4))
 					.padding(.horizontal, 10)
 				
-				LazyVGrid(columns: columns) {
-					ForEach(themes) { theme in
-						IconView(
-							theme: theme,
-							isSelected: globalVM.currentTheme == theme,
-							onSelect: { globalVM.currentTheme = theme }
-						)
+				ScrollView {
+					LazyVGrid(columns: columns) {
+						ForEach(themes) { theme in
+							IconView(
+								theme: theme,
+								isSelected: globalVM.currentTheme == theme,
+								onSelect: { globalVM.currentTheme = theme }
+							)
+						}
 					}
 				}
 			}
 			.offset(y: float ? -4 : 4)
 			.onAppear {float = true}
 			.animation(.easeInOut(duration: 2).repeatForever(autoreverses: true), value: float)
+			.frame(height: 600)
 		}
 		//		.onAppear {
 		//			print(r)

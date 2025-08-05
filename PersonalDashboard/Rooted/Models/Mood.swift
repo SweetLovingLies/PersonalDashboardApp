@@ -13,6 +13,7 @@ struct Mood: Codable, Hashable {
 }
 
 extension Mood {
+	static let placeholder = Mood(moodOption: .scrollToPick, moodType: .neutral)
 	static let happy = Mood(moodOption: .happy, moodType: .positive)
 	static let sad = Mood(moodOption: .sad, moodType: .negative)
 	static let anxious = Mood(moodOption: .anxious, moodType: .negative)
@@ -46,7 +47,7 @@ extension Mood {
 
 	static var allMoods: [Mood] {
 		[
-			happy, sad, anxious, excited, tired, motivated, stressed, relaxed, hopeful,
+			placeholder, happy, sad, anxious, excited, tired, motivated, stressed, relaxed, hopeful,
 			frustrated, calm, grateful, overwhelmed, focused, joyful, melancholy, creative,
 			lonely, confident, scattered, peaceful, inspired, burntOut, loved, content,
 			energetic, reflective, curious, nostalgic, playful

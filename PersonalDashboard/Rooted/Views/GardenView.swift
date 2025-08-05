@@ -17,13 +17,10 @@ struct GardenView: View {
 		allMoodEntries
 			.compactMap { $0.flower }
 			.filter { $0.datePlanted != nil }
+			.sorted { $0.datePlanted! < $1.datePlanted! }
 	}
 	
 	@State private var showInventory: Bool = false
-	
-	private let columns: [GridItem] = [
-		GridItem(.flexible())
-	]
 	
 	@State private var vm: ViewModel = ViewModel()
 	
@@ -46,6 +43,119 @@ struct GardenView: View {
 					viewWidth: UIScreen.main.bounds.width,
 					viewHeight: 400
 				)
+			}
+			//			HStack(spacing: 0) {
+			//				ForEach(flowers.indices, id: \.self) { _ in
+			//					ZStack {
+			//						Image("hillBG")
+			//							.resizable()
+			//							.scaledToFill()
+			//							.scrollTransition(axis: .horizontal) { content, phase in
+			//								content
+			//									.offset(x: phase.value * -160)
+			//							}
+			//					}
+			//					.containerRelativeFrame(.horizontal)
+			//				}
+			//			}
+			//			.ignoresSafeArea()
+			
+			VStack(spacing: 0) {
+				Spacer()
+				
+				ScrollView(.horizontal, showsIndicators: false) {
+					HStack(spacing: 0)  {
+						ForEach(flowers) { flower in
+							VStack(spacing: 6) {
+								
+								Spacer()
+									.allowsHitTesting(false)
+									
+								
+								FlowerView(flower: flower)
+								
+								switch flower.growthStage {
+								case .seed:
+									EmptyView()
+								case .sprout:
+									var img: String {
+										switch flower.ftype {
+										case .redCap, .cactus:
+											return flower.ftype.imageType
+											
+										default:
+											return "custom.sprout"
+										}
+									}
+									
+									var color: Color {
+										switch flower.ftype {
+										case .redCap, .cactus:
+											return flower.ftype.displayColor
+											
+										default:
+											return .leafyGreen
+										}
+									}
+									
+									Image(img)
+										.font(.system(size: 50))
+										.foregroundStyle(color)
+										.offset(y: 6)
+								case .flowering:
+									Image(flower.imagePath)
+										.font(.system(size: 80))
+										.foregroundStyle(flower.ftype.displayColor)
+								case .mature:
+									Image(flower.imagePath)
+										.font(.system(size: 100))
+										.foregroundStyle(flower.ftype.displayColor)
+								}
+							}
+							.frame(width: 240)
+							.containerRelativeFrame(.horizontal)
+							.scrollTransition(axis: .horizontal) { content, phase in
+								content
+									.scaleEffect(phase.isIdentity ? 1 : 0.95)
+									.opacity(phase.isIdentity ? 1 : 0.7)
+									.offset(x: phase.value * 30)
+							}
+						}
+					}
+				}
+				.scrollClipDisabled()
+				.scrollTargetBehavior(.paging)
+				
+				
+				// Grass
+				ZStack {
+					var grassColor: Color {
+						switch vm.timeOfDay {
+						case "day":
+							return .leafyGreen
+						case "night":
+							return .ebonyLeaf
+						default:
+							return .fallHourLeaf
+						}
+					}
+					
+					
+					Rectangle()
+						.ignoresSafeArea()
+						.foregroundStyle(grassColor)
+					
+					Button(action: {navController.navigateToRoot()}) {
+						Text("Exit")
+					}
+					.mainButtonStyle(
+						gradientColor1: .whisper,
+						fontColor: .black,
+						strokeColor: .mistyRose,
+						font:  "Fredoka-Medium"
+					)
+				}
+				.frame(height: 140)
 			}
 			
 			switch vm.timeOfDay {
@@ -83,98 +193,6 @@ struct GardenView: View {
 					}
 			}
 			
-			
-			//			HStack(spacing: 0) {
-			//				ForEach(flowers.indices, id: \.self) { _ in
-			//					ZStack {
-			//						Image("hillBG")
-			//							.resizable()
-			//							.scaledToFill()
-			//							.scrollTransition(axis: .horizontal) { content, phase in
-			//								content
-			//									.offset(x: phase.value * -160)
-			//							}
-			//					}
-			//					.containerRelativeFrame(.horizontal)
-			//				}
-			//			}
-			//			.ignoresSafeArea()
-			
-			
-			VStack(spacing: 0) {
-				Spacer()
-				
-				ZStack(alignment: .bottom) {
-					ScrollView(.horizontal, showsIndicators: false) {
-						LazyHGrid(rows: columns) {
-							ForEach(flowers) { flower in
-								VStack(spacing: 6) {
-									FlowerView(flower: flower)
-									
-									switch flower.growthStage {
-									case .seed:
-										EmptyView()
-									case .sprout:
-										Image(.customSprout)
-											.font(.system(size: 100))
-											.foregroundStyle(.leafyGreen)
-									case .flowering:
-										Image(.customFlower)
-											.font(.system(size: 100))
-											.foregroundStyle(flower.ftype.displayColor)
-									case .mature:
-										Image(.customFlower)
-											.font(.system(size: 170))
-											.foregroundStyle(flower.ftype.displayColor)
-									}
-								}
-								.frame(width: 240)
-								.containerRelativeFrame(.horizontal)
-								.scrollTransition(axis: .horizontal) { content, phase in
-									content
-										.scaleEffect(phase.isIdentity ? 1 : 0.95)
-										.opacity(phase.isIdentity ? 1 : 0.7)
-										.offset(x: phase.value * 30)
-								}
-							}
-						}
-						.frame(height: 120)
-					}
-					.scrollClipDisabled()
-					.scrollTargetBehavior(.paging)
-				}
-				
-				// Grass
-				ZStack {
-					var grassColor: Color {
-						switch vm.timeOfDay {
-						case "day":
-							return .leafyGreen
-						case "night":
-							return .ebonyLeaf
-							default:
-							return .fallHourLeaf
-						}
-					}
-					
-					
-					Rectangle()
-						.ignoresSafeArea()
-						.foregroundStyle(grassColor)
-					
-					Button(action: {navController.navigateToRoot()}) {
-						Text("Exit")
-					}
-					.mainButtonStyle(
-						gradientColor1: .whisper,
-						fontColor: .black,
-						strokeColor: .mistyRose,
-						font: globalVM.currentTheme.bodyFont
-					)
-				}
-				.frame(height: 140)
-			}
-			
 			if showInventory {
 				SeedInventoryView(allMoodEntries: allMoodEntries)
 					.environmentObject(navController)
@@ -185,6 +203,11 @@ struct GardenView: View {
 		.onAppear {
 			if vm.modelContext == nil {
 				vm.modelContext = modelContext
+			}
+			for flower in flowers {
+				if let moodEntry = allMoodEntries.first(where: { $0.flower?.id == flower.id }) {
+					vm.updateGrowth(for: moodEntry)
+				}
 			}
 		}
 		
@@ -217,7 +240,7 @@ extension GardenView {
 				try? modelContext!.save()
 			}
 		}
-				
+		
 		var timeOfDay: String {
 			let hour = Calendar.current.component(.hour, from: Date())
 			
@@ -243,7 +266,7 @@ extension GardenView {
 			configurations: ModelConfiguration(isStoredInMemoryOnly: true)
 		)
 		
-		let flowers: [FlowerType] = [.sunflower, .iris, .cosmos]
+		let flowers: [FlowerType] = [.sunflower, .iris, .cactus, .honeysuckle, .hellebore, .redCap]
 		for type in flowers {
 			var flower = Flower(ftype: type)
 			flower.isPlanted = true

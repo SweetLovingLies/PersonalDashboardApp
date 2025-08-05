@@ -10,6 +10,9 @@ import Foundation
 
 struct Flower: Identifiable, Codable {
 	var id: UUID = UUID()
+	var imagePath: String {
+		ftype.imageType
+	}
 	let ftype: FlowerType
 	var growthStage: GrowthStage = .seed
 	var hasBeenWatered: Bool = false
@@ -22,6 +25,5 @@ struct Flower: Identifiable, Codable {
 		
 		return datePlanted.map { dateFormatter.string(from: $0) } ?? "Unknown"
 	}
-
 }
 
