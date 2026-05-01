@@ -13,7 +13,7 @@ import SwiftData
 struct MainView: View {
 	@Environment(GlobalVM.self) private var globalVM
 	@EnvironmentObject var navController: NavController
-	@State private var currentSection: NavSection = .stats
+	@State private var currentSection: NavSection = .landing
 	
 	var body: some View {
 		NavigationStack(path: $navController.path) {
@@ -41,7 +41,7 @@ struct MainView: View {
 
 #Preview {
 	let container = try! ModelContainer(
-		for: ToDoItem.self, PomodoroSessionData.self,
+		for: ToDoItem.self, PomodoroSessionData.self, RoutineItem.self,
 		configurations: ModelConfiguration(isStoredInMemoryOnly: true)
 	)
 	let context = container.mainContext
@@ -56,7 +56,7 @@ struct MainView: View {
 	]
 	
 	let sampleTodo: [ToDoItem] = [
-		ToDoItem(title: "Make a cup of coffee")
+		ToDoItem(title: "Make a cup of coffee"),
 	]
 	
 	for todo in sampleTodo {

@@ -17,8 +17,31 @@ class StatsVM {
 
 	init(context: ModelContext) {
 		self.context = context
+//		migrateOldPomodoroData()
 		loadData()
 	}
+
+//	private func migrateOldPomodoroData() {
+//		do {
+//			let fetch = FetchDescriptor<PomodoroSessionData>()
+//			let allSessions = try context.fetch(fetch)
+//			
+//			var didUpdate = false
+//			for session in allSessions {
+//				if session.category == nil {
+//					session.category = .other
+//					didUpdate = true
+//				}
+//			}
+//			
+//			if didUpdate {
+//				try context.save()
+//				print("Migration: updated old PomodoroSessionData categories to fallback .other")
+//			}
+//		} catch {
+//			print("Migration failed: \(error)")
+//		}
+//	}
 
 	func loadData() {
 		do {
@@ -34,7 +57,9 @@ class StatsVM {
 	
 	// MARK: Logging
 	
-	func logPomodoro(duration: TimeInterval) {
+	func logPomodoro(
+		duration: TimeInterval,category: FocusCategory
+	) {
 		let today = Calendar.current.startOfDay(for: Date())
 
 		if let existing = sessions.first(where: { Calendar.current.isDate($0.date, inSameDayAs: today) }) {
@@ -42,8 +67,10 @@ class StatsVM {
 			existing.timeWorked += duration
 		} else {
 			let newSession = PomodoroSessionData(
-				timeWorked: duration, date: today,
-				nSessions: 1
+				timeWorked: duration,
+				date: today,
+				nSessions: 1,
+				category: category
 			)
 			context.insert(newSession)
 			sessions.append(newSession)

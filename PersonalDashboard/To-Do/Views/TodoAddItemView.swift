@@ -16,12 +16,7 @@ struct TodoAddItemView: View {
 	
 	@FocusState private var isFocused: Bool
 	
-	@Query(sort: \ToDoItem.sortOrder) var todoItems: [ToDoItem]
-	init() {
-		_todoItems = Query(filter: #Predicate {
-			$0.isCompleted == false
-		})
-	}
+	@Query(filter: #Predicate { !$0.isCompleted }, sort: \ToDoItem.sortOrder) var todoItems: [ToDoItem]
 	
 	var body: some View {
 		ZStack {

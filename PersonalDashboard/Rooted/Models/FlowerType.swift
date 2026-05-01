@@ -93,10 +93,7 @@ extension FlowerType {
 	
 	// MARK: List of others needed:
 	// Note: All of them will have a custom icon later. For now though, these go based on importance (to me)
-	/// Cactus
-	/// Red Capped Mushroom
-	/// Clover
-	/// Wisteria
+	/// Wisteria Display
 	/// Lotus
 	/// Water Lily
 	/// Hydrangeas

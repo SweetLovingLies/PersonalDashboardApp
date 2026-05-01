@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// Switch tabs based on what the current section is. Binded with Navigation Bar
 struct MainTabContainer: View {
 	@Environment(GlobalVM.self) private var globalVM
 	@Binding var currentSection: NavSection
@@ -26,10 +27,11 @@ struct MainTabContainer: View {
 					StatsView()
 				case .settings:
 					SettingsTabView()
+				case .routine:
+					RoutineView()
 				}
 			}
 			.environmentObject(navController)
-			.frame(maxWidth: .infinity, maxHeight: .infinity)
 			.background(globalVM.currentTheme.color(for: .mainBG))
 
 			NavigationBar(currentSection: $currentSection)

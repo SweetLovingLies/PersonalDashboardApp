@@ -22,7 +22,7 @@ struct DashboardButtonStyle: ButtonStyle {
 			.foregroundStyle(isSelected ? globalVM.currentTheme.color(for: .textSecondary) : globalVM.currentTheme.color(for: .textPrimary))
 			.clipShape(RoundedRectangle(cornerRadius: 15))
 			.shadow(radius: isSelected ? 5 : 0)
-			.scaleEffect(configuration.isPressed ? 0.95 : 1)
-			.animation(.spring(response: 0.3, dampingFraction: 0.6), value: configuration.isPressed)
+			.scaleEffect(configuration.isPressed ? 0.75 : 1)
+			.animation(.spring(response: 0.3, dampingFraction: 0.3), value: configuration.isPressed)
 	}
 }

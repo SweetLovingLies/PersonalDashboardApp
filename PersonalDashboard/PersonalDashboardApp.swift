@@ -19,7 +19,7 @@ struct PersonalDashboardApp: App {
 				for: ToDoItem.self, PomodoroSessionData.self, MoodEntry.self, Note.self
 			)
 		} catch {
-			fatalError("❌ Failed to initialize SwiftData container: \(error.localizedDescription)")
+			fatalError("Failed to initialize SwiftData container: \(error.localizedDescription)")
 		}
 	}
 

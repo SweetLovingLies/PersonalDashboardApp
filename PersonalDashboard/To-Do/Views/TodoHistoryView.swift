@@ -13,14 +13,11 @@ struct TodoHistoryView: View {
 	@Environment(GlobalVM.self) private var globalVM
 	@StateObject private var vm = TodoViewModel()
 	
-	@Query(sort: \ToDoItem.sortOrder) var todoItems: [ToDoItem]
-	init() {
-		_todoItems = Query(filter: #Predicate {
-			$0.isCompleted == true
-		})
-	}
-	
+	@Query(filter: #Predicate { $0.isCompleted }, sort: [SortDescriptor(\ToDoItem.completedAt, order: .reverse)]) var todoItems: [ToDoItem]
+		
 	@State private var showAlert: Bool = false
+	
+	@State private var isEditingMode: Bool = false
 	
 	var body: some View {
 		ZStack {
@@ -72,6 +69,16 @@ struct TodoHistoryView: View {
 								.font(.custom(globalVM.currentTheme.bodyFont, size: GlobalVM.buttonFontSize))
 								.foregroundStyle(globalVM.currentTheme.color(for: .textSecondary))
 								.padding(.trailing, 10)
+							
+								.simultaneousGesture(TapGesture().onEnded {
+									isEditingMode.toggle()
+								})
+							
+							
+							
+							
+							
+							
 						}
 					}
 					.frame(height: 50)
@@ -135,8 +142,10 @@ struct TodoHistoryView: View {
 							.listRowSeparator(.hidden)
 							.listRowBackground(Color.clear)
 							.onTapGesture {
-								item.isCompleted.toggle()
-								item.completedAt = nil
+								if isEditingMode {
+									item.isCompleted.toggle()
+									item.completedAt = nil
+								}
 							}
 					}
 					.listStyle(.plain)

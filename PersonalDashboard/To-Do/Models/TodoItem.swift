@@ -21,12 +21,12 @@ class ToDoItem: Identifiable {
 	
 	var sortOrder: Int?
 	
-	init(title: String, reminderTime: Date? = nil, sortOrder: Int? = nil) {
+	init(title: String, createdAt: Date = Date(),  completedAt: Date? = nil, reminderTime: Date? = nil, sortOrder: Int? = nil) {
 		self.id = UUID()
 		self.title = title
-		self.createdAt = Date()
+		self.createdAt = createdAt
 		self.isCompleted = false
-		self.completedAt = nil
+		self.completedAt = completedAt
 		self.reminderTime = reminderTime
 		self.sortOrder = sortOrder
 	}

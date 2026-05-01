@@ -13,6 +13,8 @@ struct GardenView: View {
 	@Environment(GlobalVM.self) private var globalVM
 	@EnvironmentObject var navController: NavController
 	@Query private var allMoodEntries: [MoodEntry]
+	
+	
 	var flowers: [Flower] {
 		allMoodEntries
 			.compactMap { $0.flower }

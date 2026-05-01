@@ -14,12 +14,19 @@ class PomodoroSessionData: Identifiable {
 	var date: Date
 	var timeWorked: TimeInterval
 	var nSessions: Int
+	var category: FocusCategory
 
-	init(timeWorked: TimeInterval, date: Date, nSessions: Int) {
+	init(
+		timeWorked: TimeInterval,
+		date: Date,
+		nSessions: Int,
+		category: FocusCategory = .other
+	) {
 		self.id = UUID()
 		self.timeWorked = timeWorked
 		self.date = date
 		self.nSessions = nSessions
+		self.category = category
 	}
 }
 

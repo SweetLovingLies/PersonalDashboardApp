@@ -11,8 +11,9 @@ struct TimerSetupView: View {
 	@State var selectedHours: Int
 	@State var selectedMinutes: Int
 	@State var selectedSeconds: Int
-	
-	let onTimeSelected: (Int, Int, Int) -> Void
+	@State var selectedCatagory: FocusCategory = .selectOne
+
+	let onOptionsSelected: (Int, Int, Int, FocusCategory) -> Void
 	
 	private let hoursRange = 0...23
 	private let minutesRange = 0...59
@@ -27,6 +28,23 @@ struct TimerSetupView: View {
 			globalVM.currentTheme.color(for: .mainBG).opacity(0.8).ignoresSafeArea()
 				.shadow(color: globalVM.currentTheme.color(for: .accent1), radius: 10)
 			VStack {
+				Menu {
+					Picker("", selection: $selectedCatagory) {
+						ForEach(FocusCategory.allCases, id: \.self) { category in
+							Text(category.rawValue)
+								.font(.custom(globalVM.currentTheme.bodyFont, size: GlobalVM.midTitleFontSize))
+						}
+					}
+				} label: {
+					HStack {
+						Text(selectedCatagory.rawValue)
+						Image(systemName: "chevron.up.chevron.down")
+					}
+					.font(.custom(globalVM.currentTheme.bodyFont, size: GlobalVM.bodyFontSize))
+				}
+				.tint(globalVM.currentTheme.color(for: .textPrimary))
+				.colorScheme(globalVM.currentTheme.colorScheme == .dark ? .dark : .light)
+		
 				HStack(spacing: 0) {
 					TimePickerColumn(title: "hr", range: hoursRange, selection: $selectedHours)
 					TimePickerColumn(title: "min", range: minutesRange, selection: $selectedMinutes)
@@ -34,10 +52,10 @@ struct TimerSetupView: View {
 				}
 
 				Button {
-					onTimeSelected(selectedHours, selectedMinutes, selectedSeconds)
+					onOptionsSelected(selectedHours, selectedMinutes, selectedSeconds, selectedCatagory)
 					isEditingMode = false
 				} label: {
-					Text("Set Time")
+					Text("Select")
 						.font(.custom(globalVM.currentTheme.bodyFont, size: GlobalVM.midTitleFontSize))
 						.bold()
 						.padding()

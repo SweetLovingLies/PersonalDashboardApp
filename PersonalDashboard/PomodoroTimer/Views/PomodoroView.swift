@@ -19,7 +19,7 @@ struct PomodoroView: View {
 			ZStack {
 				globalVM.currentTheme.color(for: .mainBG).ignoresSafeArea()
 				
-				VStack(alignment: .center, spacing: 40) {
+				VStack(alignment: .center, spacing: 30) {
 					ZStack {
 						globalVM.currentTheme.color(for: .headerBG).ignoresSafeArea()
 					
@@ -30,28 +30,51 @@ struct PomodoroView: View {
 					}
 					.frame(height: GlobalVM.headerHeight)
 					
-					ZStack {
-						
-						ZStack {
-							globalVM.currentTheme.color(for: .accent2)
+					VStack {
+						if vm.sessionCategory != .selectOne {
+							Text(vm.sessionCategory.focusLine)
+								.font(.custom(globalVM.currentTheme.bodyFont, size: GlobalVM.buttonFontSize))
+								.foregroundStyle(globalVM.currentTheme.color(for: .textPrimary))
 							
-							Image(.lofiKittyCat)
-								.resizable()
-						}
-						.clipShape(Circle())
-						
-						ZStack {
-							Circle() // Background Bar
-								.stroke(globalVM.currentTheme.color(for: .accent1), lineWidth: 20)
+								.multilineTextAlignment(.center)
+								.fixedSize(horizontal: false, vertical: true)
 							
-							Circle() // Progress Bar
-								.trim(from: 0, to: vm.timeRemaining / vm.totalTime)
-								.stroke(.white, style: StrokeStyle(lineWidth: 20, lineCap: .round, lineJoin: .round))
-								.rotationEffect(.degrees(-90))
-								.animation(.easeInOut, value: vm.timeRemaining)
+								.padding(.bottom)
+								.padding(.horizontal, 30)
+						} else {
+							Text("Make sure to pick a catagory!")
+								.font(.custom(globalVM.currentTheme.bodyFont, size: GlobalVM.smallTitleFontSize))
+								.foregroundStyle(globalVM.currentTheme.color(for: .textPrimary))
+							
+								.multilineTextAlignment(.center)
+								.fixedSize(horizontal: false, vertical: true)
+							
+								.padding(.bottom)
+								.padding(.horizontal, 30)
 						}
+
+						ZStack {
+							ZStack {
+								globalVM.currentTheme.color(for: .accent2)
+								Image(.lofiKittyCat)
+									.resizable()
+							}
+							.clipShape(Circle())
+							
+							
+							ZStack {
+								Circle() // Background Bar
+									.stroke(globalVM.currentTheme.color(for: .accent1), lineWidth: 20)
+								
+								Circle() // Progress Bar
+									.trim(from: 0, to: vm.timeRemaining / vm.totalTime)
+									.stroke(.white, style: StrokeStyle(lineWidth: 20, lineCap: .round, lineJoin: .round))
+									.rotationEffect(.degrees(-90))
+									.animation(.easeInOut, value: vm.timeRemaining)
+							}
+						}
+						.frame(width: 300, height: 300)
 					}
-					.frame(width: 300, height: 300)
 					
 					// MARK: Selected Time
 					
@@ -77,10 +100,15 @@ struct PomodoroView: View {
 							Text(vm.isRunning ? "PAUSE" : "START")
 								
 						}
-						.buttonStyle(PomodoroStateButtonStyle(globalVM: globalVM, color: globalVM.currentTheme.color(for: .accent1), isEnabled: vm.isTimeSet))
-						.disabled(!vm.isTimeSet || vm.timeRemaining <= 0)
-						
-						
+						.buttonStyle(PomodoroStateButtonStyle(globalVM: globalVM, color: globalVM.currentTheme.color(for: .accent1), isEnabled: vm.isTimeSet && vm.sessionCategory != .selectOne))
+						.disabled(
+							!(
+								vm.isTimeSet &&
+								vm.timeRemaining > 0 &&
+								vm.sessionCategory != .selectOne
+							)
+						)
+
 						Button {
 							vm.resetTimer()
 						} label: {
@@ -100,8 +128,9 @@ struct PomodoroView: View {
 				TimerSetupView(selectedHours: Int(vm.timeRemaining / 3600),
 				selectedMinutes: Int(vm.timeRemaining.truncatingRemainder(dividingBy: 3600) / 60),
 				selectedSeconds: Int(vm.timeRemaining.truncatingRemainder(dividingBy: 60)),
-				onTimeSelected: { hours, minutes, seconds in
+							   onOptionsSelected: { hours, minutes, seconds, catagory  in
 					vm.updateTime(hours: hours, minutes: minutes, seconds: seconds)
+					vm.sessionCategory = catagory
 				}, isEditingMode: $vm.isEditingMode)
 				.frame(width: 350, height: 210)
 				.clipShape(RoundedRectangle(cornerRadius: GlobalVM.cornerRadiusLarge))
@@ -121,8 +150,8 @@ struct PomodoroView: View {
 			.animation(.bouncy, value: vm.isEditingMode)
 		}
 		.onAppear {
-			vm.onSessionCompleted = { duration in
-				statsVM.logPomodoro(duration: duration)
+			vm.onSessionCompleted = { duration, catagory in
+				statsVM.logPomodoro(duration: duration, category: catagory)
 			}
 		}
 	}
@@ -131,17 +160,18 @@ struct PomodoroView: View {
 extension PomodoroView {
 	@Observable
 	class ViewModel {
-		var isEditingMode: Bool = false
+		var isEditingMode: Bool = false // Change as needed
 		var timeRemaining: TimeInterval = 0
 		var totalTime: TimeInterval = 0
 		var isRunning: Bool = false
 		var isTimeSet: Bool = false
+		var sessionCategory: FocusCategory = .selectOne
 		
 		private let musicOptions = ["JapanVillageFlute", "LeaveMeAlone", "LookingUp", "OnAVacation", "PowderSnow","SpringIsHere"]
 		private var timer: Timer?
 
 		// Callback for when a session is completed
-		var onSessionCompleted: ((TimeInterval) -> Void)?
+		var onSessionCompleted: ((TimeInterval, FocusCategory) -> Void)?
 
 		func formattedTime() -> String {
 			if !isTimeSet {
@@ -191,7 +221,7 @@ extension PomodoroView {
 				timeRemaining -= 1
 			} else {
 				pauseTimer()
-				onSessionCompleted?(totalTime)
+				onSessionCompleted?(totalTime, sessionCategory)
 			}
 		}
 	}

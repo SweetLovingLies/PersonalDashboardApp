@@ -66,6 +66,11 @@ struct NavigationBar: View {
 					}
 					.buttonStyle(DashboardButtonStyle(isSelected: currentSection == .settings, globalVM: globalVM))
 					
+//					Button(action: {currentSection = .routine}) {
+//						Image(systemName: "")
+//					}
+//					.buttonStyle(DashboardButtonStyle(isSelected: currentSection == .routine, globalVM: globalVM))
+					
 				}
 				.navBarStyle(globalVM: globalVM)
 			}

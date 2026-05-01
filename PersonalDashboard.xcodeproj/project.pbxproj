@@ -11,7 +11,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		F6420F102DF0B39000B80145 /* Exceptions for "PersonalDashboard" folder in "PersonalDashboard" target */ = {
+		F65939DD2E5A745800425687 /* Exceptions for "PersonalDashboard" folder in "PersonalDashboard" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -24,7 +24,7 @@
 		F6ABB1B42DDA452F009E7645 /* PersonalDashboard */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				F6420F102DF0B39000B80145 /* Exceptions for "PersonalDashboard" folder in "PersonalDashboard" target */,
+				F65939DD2E5A745800425687 /* Exceptions for "PersonalDashboard" folder in "PersonalDashboard" target */,
 			);
 			path = PersonalDashboard;
 			sourceTree = "<group>";
@@ -91,7 +91,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1630;
-				LastUpgradeCheck = 1630;
+				LastUpgradeCheck = 1640;
 				TargetAttributes = {
 					F6ABB1B12DDA452F009E7645 = {
 						CreatedOnToolsVersion = 16.3;

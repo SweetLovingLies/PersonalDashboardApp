@@ -8,7 +8,7 @@
 
 import Foundation
 
-// Only 3 because this will only really be used within the LandingView "GROUP"
+// Only 4 because this will only really be used within the LandingView "GROUP"
 enum Route: Hashable {
 	case reflection(selectedMood: Mood)
 	case seedGet(entry: MoodEntry)

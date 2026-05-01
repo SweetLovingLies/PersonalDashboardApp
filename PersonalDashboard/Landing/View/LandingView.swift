@@ -52,8 +52,6 @@ struct LandingView: View {
 					Text(currentAffirmation)
 						.foregroundStyle(globalVM.currentTheme.colorScheme == .dark ? globalVM.currentTheme.color(for: .textSecondary) : globalVM.currentTheme.color(for: .textPrimary))
 					
-					
-					
 						.font(.custom(globalVM.currentTheme.bodyFont, size: GlobalVM.midTitleFontSize))
 						.offset(y: float ? -4 : 4)
 						.frame(width: 220)
@@ -69,89 +67,146 @@ struct LandingView: View {
 				ZStack {
 					Color.blue.opacity(0.2)
 					
-					VStack {
-						// Header
-						GeometryReader { geo in
-							ZStack {
-								SkyView(cloudSize: 35, viewWidth: geo.size.width, viewHeight: 100)
-								HStack(alignment: .bottom) {
-									Text("How are you feeling?")
-										.font(.custom(globalVM.currentTheme.bodyFont, size: GlobalVM.smallTitleFontSize))
-										.bold()
-										.padding(.top, 20)
-										.foregroundStyle(globalVM.currentTheme.color(for: .textPrimary))
+					if vm.didLogMoodToday(entries: allMoodEntries),
+					   let todayMood = allMoodEntries.first(where: { Calendar.current.isDate($0.dateCreated, inSameDayAs: Date()) })?.mood.moodOption {
+						VStack {
+							GeometryReader { geo in
+								ZStack {
+									SkyView(cloudSize: 35, viewWidth: geo.size.width, viewHeight: 100)
+									HStack(alignment: .bottom) {
+										Text("Today, you are feeling:")
+											.font(.custom(globalVM.currentTheme.bodyFont, size: GlobalVM.smallTitleFontSize))
+											.bold()
+											.padding(.top, 20)
+											.foregroundStyle(globalVM.currentTheme.color(for: .textPrimary))
+									}
 								}
 							}
-						}
-						
-						// Picker
-						ZStack {
+							
+							Text("\(todayMood.rawValue)")
+								.font(.custom(globalVM.currentTheme.headerFont, size: 32))
+								.foregroundStyle(globalVM.currentTheme.color(for: .textPrimary))
+							
+							Spacer()
+							
+							// Randomized Pastel Flowers
 							VStack(spacing: 0) {
-								RoundedRectangle(cornerRadius: 5)
-									.frame(height: 32)
-									.foregroundStyle(.blue)
-									.opacity(0.06)
-							}
-							
-							Picker("Pick your Mood", selection: $vm.selectedMood) {
-								ForEach(vm.moods, id: \.self) { mood in
-									Text(mood.moodOption.rawValue)
-										.font(.custom(globalVM.currentTheme.bodyFont, size: GlobalVM.bodyFontSize))
-										.foregroundStyle(globalVM.currentTheme.color(for: .textPrimary))
-								}
-							}
-							.labelsHidden()
-						}
-						.pickerStyle(.wheel)
-						.frame(height: 50)
-						
-						Spacer()
-						
-						// Randomized Pastel Flowers
-						VStack(spacing: 0) {
-							let range = 1...7
-							HStack {
-								ForEach(range, id: \.self) { _ in
-									Image(.customFlower)
-										.foregroundStyle(Color.pastel())
-										.font(.system(size: 32))
-										.shadowOutlineStyle(color: .white, range: 0.5)
-								}
-							}
-							
-							// Grass and Buttons
-							ZStack {
-								Rectangle()
-									.foregroundStyle(.leafyGreen)
-									.frame(height: 75)
-								
+								let range = 1...7
 								HStack {
-									if !vm.didLogMoodToday(entries: allMoodEntries) {
-										Button(action: {
-											navController.navigate(to: .reflection(selectedMood: vm.selectedMood))
-										}) {
-											Text("Select!")
+									ForEach(range, id: \.self) { _ in
+										Image(.customFlower)
+											.foregroundStyle(Color.pastel())
+											.font(.system(size: 32))
+											.shadowOutlineStyle(color: .white, range: 0.5)
+									}
+								}
+								
+								// Grass and Buttons
+								ZStack {
+									Rectangle()
+										.foregroundStyle(.leafyGreen)
+										.frame(height: 75)
+									
+									HStack {
+										Button(action:{navController.navigate(to: .garden)}) {
+											Text("Visit Garden")
 										}
 										.mainButtonStyle(
 											gradientColor1: globalVM.currentTheme.color(for: .accent2),
-											fontColor: vm.selectedMood == .placeholder ? .gray : globalVM.currentTheme.color(for: .textPrimary),
+											fontColor: globalVM.currentTheme.color(for: .textPrimary),
 											strokeColor: globalVM.currentTheme.color(for: .accent1),
 											font: globalVM.currentTheme.bodyFont
 										)
-										.disabled(vm.selectedMood == .placeholder)
 									}
 									
-									Button(action:{navController.navigate(to: .garden)}) {
-										Text("Visit Garden")
+								}
+							}
+						}
+					} else {
+						VStack {
+							// Header
+							GeometryReader { geo in
+								ZStack {
+									SkyView(cloudSize: 35, viewWidth: geo.size.width, viewHeight: 100)
+									HStack(alignment: .bottom) {
+										Text("How are you feeling?")
+											.font(.custom(globalVM.currentTheme.bodyFont, size: GlobalVM.smallTitleFontSize))
+											.bold()
+											.padding(.top, 20)
+											.foregroundStyle(globalVM.currentTheme.color(for: .textPrimary))
 									}
-									.mainButtonStyle(
-										gradientColor1: globalVM.currentTheme.color(for: .accent2),
-										fontColor: globalVM.currentTheme.color(for: .textPrimary),
-										strokeColor: globalVM.currentTheme.color(for: .accent1),
-										font: globalVM.currentTheme.bodyFont
-									)
+								}
+							}
+							
+							// Picker
+							ZStack {
+								VStack(spacing: 0) {
+									RoundedRectangle(cornerRadius: 5)
+										.frame(height: 32)
+										.foregroundStyle(.blue)
+										.opacity(0.06)
 								}
 								
+								Picker("Pick your Mood", selection: $vm.selectedMood) {
+									ForEach(vm.moods, id: \.self) { mood in
+										Text(mood.moodOption.rawValue)
+											.font(.custom(globalVM.currentTheme.bodyFont, size: GlobalVM.bodyFontSize))
+											.foregroundStyle(globalVM.currentTheme.color(for: .textPrimary))
+									}
+								}
+								.labelsHidden()
+							}
+							.pickerStyle(.wheel)
+							.frame(height: 50)
+							
+							Spacer()
+							
+							// Randomized Pastel Flowers
+							VStack(spacing: 0) {
+								let range = 1...7
+								HStack {
+									ForEach(range, id: \.self) { _ in
+										Image(.customFlower)
+											.foregroundStyle(Color.pastel())
+											.font(.system(size: 32))
+											.shadowOutlineStyle(color: .white, range: 0.5)
+									}
+								}
+								
+								// Grass and Buttons
+								ZStack {
+									Rectangle()
+										.foregroundStyle(.leafyGreen)
+										.frame(height: 75)
+									
+									HStack {
+										if !vm.didLogMoodToday(entries: allMoodEntries) {
+											Button(action: {
+												navController.navigate(to: .reflection(selectedMood: vm.selectedMood))
+											}) {
+												Text("Select!")
+											}
+											.mainButtonStyle(
+												gradientColor1: globalVM.currentTheme.color(for: .accent2),
+												fontColor: vm.selectedMood == .placeholder ? .gray : globalVM.currentTheme.color(for: .textPrimary),
+												strokeColor: globalVM.currentTheme.color(for: .accent1),
+												font: globalVM.currentTheme.bodyFont
+											)
+											.disabled(vm.selectedMood == .placeholder)
+										}
+										
+										Button(action:{navController.navigate(to: .garden)}) {
+											Text("Visit Garden")
+										}
+										.mainButtonStyle(
+											gradientColor1: globalVM.currentTheme.color(for: .accent2),
+											fontColor: globalVM.currentTheme.color(for: .textPrimary),
+											strokeColor: globalVM.currentTheme.color(for: .accent1),
+											font: globalVM.currentTheme.bodyFont
+										)
+									}
+									
+								}
 							}
 						}
 					}
@@ -178,28 +233,28 @@ struct LandingView: View {
 				if settings.authorizationStatus == .authorized {
 					vm.make530pmNotification()
 				} else {
-					print("Notification not authorized yet.")
+//					print("Notification not authorized yet.")
 				}
 			}
 			
-			// Not sure why regular querying doesn't work, but this does.
+			// Must be loaded after everything else loads or it causes crashes.
 			Task {
 				do {
 					let descriptor = FetchDescriptor<MoodEntry>()
 					allMoodEntries = try modelContext.fetch(descriptor)
 				} catch {
-					print("💥 Failed to fetch MoodEntries: \(error.localizedDescription)")
+					print("Failed to fetch MoodEntries: \(error.localizedDescription)")
 				}
 			}
 			
 			// MARK: For Font Names
-//			let fontFamilyNames = UIFont.familyNames
-//			for familyName in fontFamilyNames {
-//				
-//				print("Font Family Name = [\(familyName)]")
-//				let names = UIFont.fontNames(forFamilyName: familyName)
-//				print("Font Names = [\(names)]")
-//			}
+			//			let fontFamilyNames = UIFont.familyNames
+			//			for familyName in fontFamilyNames {
+			//
+			//				print("Font Family Name = [\(familyName)]")
+			//				let names = UIFont.fontNames(forFamilyName: familyName)
+			//				print("Font Names = [\(names)]")
+			//			}
 		}
 	}
 }
